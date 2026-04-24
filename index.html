@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmDirect - Fresh from Farmers</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f7e8; color: #1a3d1a; }
+        .header { background: linear-gradient(135deg, #2d5a2c, #1a4d1a); color: white; text-align: center; padding: 40px 20px; }
+        .header h1 { font-size: 2.5rem; }
+        .badge { background: #ffb74d; color: #1a3d1a; display: inline-block; padding: 5px 15px; border-radius: 20px; margin-top: 15px; font-weight: bold; }
+        .language-selector { margin-top: 15px; }
+        .language-selector button { background: #ffb74d; color: #1a3d1a; border: none; padding: 5px 15px; margin: 0 5px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .language-selector button:hover { background: #ffa000; }
+        .nav-menu { margin-top: 20px; }
+        .nav-menu a { color: white; margin: 0 15px; text-decoration: none; font-weight: bold; }
+        .section-title { background: #2d5a2c; color: white; text-align: center; padding: 15px; margin: 40px 20px 20px; border-radius: 10px; }
+        .products { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .product-card { background: white; border-radius: 15px; padding: 20px; width: 280px; text-align: center; border-top: 5px solid #4caf50; box-shadow: 0 4px 12px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s; }
+        .product-card:hover { transform: translateY(-5px); }
+        .product-title { font-size: 1.5rem; font-weight: bold; color: #2d5a2c; }
+        .price { font-size: 1.8rem; font-weight: bold; color: #1a4d1a; margin: 10px 0; }
+        .farmer-share { background: #e8f5e9; padding: 8px; border-radius: 8px; font-size: 0.85rem; margin: 10px 0; color: #2e7d32; }
+        .footer { background: #1a3d1a; color: #ccc; text-align: center; padding: 20px; margin-top: 40px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; border-radius: 15px; padding: 30px; max-width: 550px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
+        .submit-btn, .cancel-btn { padding: 12px; border-radius: 25px; cursor: pointer; width: 100%; margin-top: 10px; font-weight: bold; border: none; }
+        .submit-btn { background: #4caf50; color: white; }
+        .cancel-btn { background: #f44336; color: white; }
+        .success { background: #c8e6c9; color: #2e7d32; padding: 10px; border-radius: 8px; margin-top: 15px; display: none; text-align: center; }
+        .error { background: #ffcdd2; color: #c62828; padding: 10px; border-radius: 8px; margin-top: 15px; display: none; text-align: center; }
+        .whatsapp-btn { background: #25D366; color: white; padding: 10px 20px; border-radius: 25px; text-decoration: none; display: inline-block; margin-top: 10px; }
+        @media (max-width: 768px) { .products { flex-direction: column; align-items: center; } .product-card { width: 100%; } }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🌾 FarmDirect</h1>
+    <p data-lang="tagline">Fresh Produce, Directly from Farmers — Fair Price for Everyone</p>
+    <div class="badge">🤝 Farmer First | Zero Middlemen | Zero Profit on Rice</div>
+    <div class="language-selector">
+        <button onclick="setLanguage('en')">English</button>
+        <button onclick="setLanguage('te')">తెలుగు</button>
+        <button onclick="setLanguage('hi')">हिन्दी</button>
+    </div>
+    <div class="nav-menu">
+        <a href="index.html" data-lang="home">🏠 Home</a>
+        <a href="price.html" data-lang="price">💰 Price Breakdown</a>
+        <a href="market.html" data-lang="market">📊 Market Prices</a>
+        <a href="farmers.html" data-lang="farmers">👨‍🌾 Our Farmers</a>
+        <a href="dashboard.html" data-lang="dashboard">📋 Dashboard</a>
+        <a href="track.html" data-lang="track">📍 Track Order</a>
+    </div>
+</div>
+
+<h2 class="section-title" data-lang="products">🛒 Our Products</h2>
+<div class="products">
+    <div class="product-card" onclick="openModal('Premium Rice', '2200', '1800')">
+        <div class="product-title">🍚 Premium Rice</div>
+        <div class="price">₹44<span>/kg</span></div>
+        <div class="farmer-share">👨‍🌾 Farmer gets: ₹36/kg | 50kg bag: ₹2,200</div>
+    </div>
+    <div class="product-card" onclick="openModal('Toor Dal', '120', '90')">
+        <div class="product-title">🫘 Toor Dal</div>
+        <div class="price">₹120<span>/kg</span></div>
+        <div class="farmer-share">👨‍🌾 Farmer gets: ₹90/kg</div>
+    </div>
+    <div class="product-card" onclick="openModal('Moong Dal', '100', '80')">
+        <div class="product-title">💚 Moong Dal</div>
+        <div class="price">₹100<span>/kg</span></div>
+        <div class="farmer-share">👨‍🌾 Farmer gets: ₹80/kg</div>
+    </div>
+    <div class="product-card" onclick="openModal('Chana Dal', '85', '60')">
+        <div class="product-title">🥜 Chana Dal</div>
+        <div class="price">₹85<span>/kg</span></div>
+        <div class="farmer-share">👨‍🌾 Farmer gets: ₹60/kg</div>
+    </div>
+    <div class="product-card" onclick="openModal('Turmeric Powder', '220', '90')">
+        <div class="product-title">🌿 Turmeric Powder</div>
+        <div class="price">₹220<span>/kg</span></div>
+        <div class="farmer-share">👨‍🌾 Farmer gets: ₹90/kg (raw)</div>
+    </div>
+</div>
+
+<div class="footer">
+    <p data-lang="footer">🌾 FarmDirect — Farmer First, Zero Profit on Rice</p>
+    <p data-lang="bulk">📦 Bulk orders for PGs, Hostels, Restaurants, Offices, Households</p>
+</div>
+
+<div id="orderModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h2 data-lang="orderTitle">📦 Place Your Order</h2>
+        <div style="background:#e8f5e9; padding:10px; border-radius:8px; margin-bottom:15px;">
+            <strong id="modal-product-name">-</strong><br>
+            Price: ₹<span id="modal-product-price">-</span>/kg<br>
+            Farmer gets: ₹<span id="modal-farmer-price">-</span>/kg
+        </div>
+        <form id="orderForm">
+            <div class="form-group"><label data-lang="nameLabel">Full Name *</label><input type="text" id="name" required></div>
+            <div class="form-group"><label data-lang="phoneLabel">Phone *</label><input type="tel" id="phone" maxlength="10" required placeholder="9876543210"></div>
+            <div class="form-group"><label data-lang="addressLabel">Delivery Address *</label><textarea id="address" rows="2" required></textarea></div>
+            <div class="form-group"><label data-lang="qtyLabel">Quantity (kg) *</label>
+                <select id="quantity">
+                    <option value="1">1 kg</option>
+                    <option value="5">5 kg</option>
+                    <option value="10">10 kg (5% off)</option>
+                    <option value="25">25 kg (8% off)</option>
+                    <option value="50">50 kg (12% off)</option>
+                </select>
+            </div>
+            <div class="form-group"><label data-lang="deliveryDateLabel">Delivery Date</label><input type="date" id="delivery_date"></div>
+            <div class="form-group"><label data-lang="referralLabel">Referral Code (optional)</label><input type="text" id="referral_code"></div>
+            <button type="submit" class="submit-btn" data-lang="submitBtn">✅ Submit Order</button>
+            <button type="button" class="cancel-btn" onclick="closeModal()" data-lang="cancelBtn">Cancel</button>
+        </form>
+        <div id="successMsg" class="success"></div>
+        <div id="errorMsg" class="error">❌ Submission failed. Please try again.</div>
+    </div>
+</div>
+
+<script>
+    // ✅ CORRECT APPS SCRIPT URL
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7hMHM4_svL90Co6U3Djhgi4eS0b9o8UUzjpvK4M7nqdbi8ynTbrRduFkVIYPDcDqC/exec';
+    const YOUR_WHATSAPP = '916302588948';
+    let currentProduct = {};
+
+    const translations = {
+        en: { tagline: "Fresh Produce, Directly from Farmers — Fair Price for Everyone", home: "🏠 Home", price: "💰 Price Breakdown", market: "📊 Market Prices", farmers: "👨‍🌾 Our Farmers", dashboard: "📋 Dashboard", track: "📍 Track Order", products: "🛒 Our Products", footer: "🌾 FarmDirect — Farmer First, Zero Profit on Rice", bulk: "📦 Bulk orders for PGs, Hostels, Restaurants, Offices, Households", orderTitle: "📦 Place Your Order", nameLabel: "Full Name *", phoneLabel: "Phone *", addressLabel: "Delivery Address *", qtyLabel: "Quantity (kg) *", deliveryDateLabel: "Delivery Date", referralLabel: "Referral Code (optional)", submitBtn: "✅ Submit Order", cancelBtn: "Cancel" },
+        te: { tagline: "తాజా ఉత్పత్తులు, నేరుగా రైతుల నుండి — అందరికీ సరసమైన ధర", home: "🏠 హోమ్", price: "💰 ధర వివరాలు", market: "📊 మార్కెట్ ధరలు", farmers: "👨‍🌾 మా రైతులు", dashboard: "📋 డ్యాష్బోర్డ్", track: "📍 ఆర్డర్ ట్రాక్", products: "🛒 మా ఉత్పత్తులు", footer: "🌾 ఫార్మ్డైరెక్ట్ — రైతు మొదటి, బియ్యంపై లాభం లేదు", bulk: "📦 పీజీలు, హాస్టళ్లు, రెస్టారెంట్లు, కార్యాలయాలు, కుటుంబాలకు బల్క్ ఆర్డర్లు", orderTitle: "📦 మీ ఆర్డర్ ఇవ్వండి", nameLabel: "పూర్తి పేరు *", phoneLabel: "ఫోన్ నంబర్ *", addressLabel: "డెలివరీ చిరునామా *", qtyLabel: "పరిమాణం (కేజీలు) *", deliveryDateLabel: "డెలివరీ తేదీ", referralLabel: "రెఫరల్ కోడ్ (ఐచ్ఛికం)", submitBtn: "✅ ఆర్డర్ సమర్పించండి", cancelBtn: "రద్దు చేయండి" },
+        hi: { tagline: "ताजा उपज, सीधे किसानों से — सभी के लिए उचित मूल्य", home: "🏠 होम", price: "💰 मूल्य विवरण", market: "📊 बाजार मूल्य", farmers: "👨‍🌾 हमारे किसान", dashboard: "📋 डैशबोर्ड", track: "📍 ऑर्डर ट्रैक", products: "🛒 हमारे उत्पाद", footer: "🌾 फार्मडायरेक्ट — किसान पहले, चावल पर शून्य लाभ", bulk: "📦 पीजी, हॉस्टल, रेस्तरां, कार्यालयों, परिवारों के लिए थोक ऑर्डर", orderTitle: "📦 अपना ऑर्डर दें", nameLabel: "पूरा नाम *", phoneLabel: "फोन नंबर *", addressLabel: "डिलीवरी पता *", qtyLabel: "मात्रा (किलो) *", deliveryDateLabel: "डिलीवरी तिथि", referralLabel: "रेफरल कोड (वैकल्पिक)", submitBtn: "✅ ऑर्डर सबमिट करें", cancelBtn: "रद्द करें" }
+    };
+
+    let currentLang = 'en';
+    function setLanguage(lang) { currentLang = lang; document.querySelectorAll('[data-lang]').forEach(el => { const key = el.getAttribute('data-lang'); if (translations[lang][key]) el.textContent = translations[lang][key]; }); localStorage.setItem('farmdirect_lang', lang); }
+    function loadSavedLanguage() { const saved = localStorage.getItem('farmdirect_lang'); if (saved && translations[saved]) setLanguage(saved); else setLanguage('en'); }
+
+    function openModal(name, price, farmerPrice) {
+        currentProduct = { name, price, farmerPrice };
+        document.getElementById('modal-product-name').innerText = name;
+        document.getElementById('modal-product-price').innerText = price;
+        document.getElementById('modal-farmer-price').innerText = farmerPrice;
+        document.getElementById('orderModal').style.display = 'flex';
+    }
+    function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
+    function validatePhone(p) { return /^[6-9]\d{9}$/.test(p); }
+
+    document.getElementById('orderForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const phone = document.getElementById('phone').value;
+        if (!validatePhone(phone)) { alert('❌ Enter valid 10-digit mobile number'); return; }
+        let qty = parseInt(document.getElementById('quantity').value);
+        let total = parseInt(currentProduct.price) * qty;
+        if (qty >= 10 && qty < 25) total = total * 0.95;
+        else if (qty >= 25 && qty < 50) total = total * 0.92;
+        else if (qty >= 50) total = total * 0.88;
+        const orderData = {
+            orderId: Date.now(),
+            product: currentProduct.name,
+            quantity: qty,
+            total: Math.round(total),
+            name: document.getElementById('name').value,
+            phone: phone,
+            address: document.getElementById('address').value,
+            delivery_date: document.getElementById('delivery_date').value,
+            referral_code: document.getElementById('referral_code').value,
+            status: 'placed'
+        };
+        try {
+            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData) });
+            const msg = `*FARMDIRECT ORDER*%0AOrder ID: ${orderData.orderId}%0AProduct: ${orderData.product}%0AQty: ${orderData.quantity} kg%0ATotal: ₹${orderData.total}%0AName: ${orderData.name}%0APhone: ${orderData.phone}%0AAddress: ${orderData.address}`;
+            document.getElementById('successMsg').innerHTML = `✅ Order Confirmed!<br><br>Order ID: ${orderData.orderId}<br><br><a href="https://wa.me/${YOUR_WHATSAPP}?text=${msg}" target="_blank" class="whatsapp-btn">📲 Confirm on WhatsApp</a><br><br><a href="track.html" style="display:inline-block; margin-top:10px;">📍 Track Order</a>`;
+            document.getElementById('successMsg').style.display = 'block';
+            document.getElementById('orderForm').reset();
+            setTimeout(() => closeModal(), 8000);
+        } catch(err) { document.getElementById('errorMsg').style.display = 'block'; }
+    });
+    window.onclick = function(e) { if (e.target === document.getElementById('orderModal')) closeModal(); };
+    loadSavedLanguage();
+</script>
+</body>
+</html>
